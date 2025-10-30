@@ -5,6 +5,11 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+Properties properties = new Properties()
+File localPropertiesFile = rootProject.file("local.properties")
+properties.load(localPropertiesFile.newDataInputStream())
+def baseUrlFromProperties = properties.getProperty("base.url", "YOUR_DEFAULT_URL_HERE")
+
 android {
     compileSdk = 34 // 👈 유지
 
@@ -17,7 +22,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
-        }    }
+        }
+        buildConfigField "String", "BASE_URL", "\"${baseUrlFromProperties}\""
+    }
 
     buildTypes {
         release {

@@ -1,7 +1,5 @@
 package com.team3.compose.di
 import com.team3.compose.BuildConfig
-import com.team3.compose.network.DetailsApi
-import com.team3.compose.network.UsersApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +13,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
     @Singleton
     @Provides
     fun provideOkHttpClient() = if (BuildConfig.DEBUG) {
@@ -34,18 +31,8 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create())
-        .baseUrl("https://api.github.com/")
+        .baseUrl(BuildConfig.BASE_URL)
         .client(okHttpClient)
         .build()
-
-    @Provides
-    @Singleton
-    fun provideApiService(retrofit: Retrofit): UsersApi =
-        retrofit.create(UsersApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideUserDetailsService(retrofit: Retrofit): DetailsApi =
-        retrofit.create(DetailsApi::class.java)
 
 }
