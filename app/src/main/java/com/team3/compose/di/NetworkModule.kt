@@ -1,5 +1,7 @@
 package com.team3.compose.di
+
 import com.team3.compose.BuildConfig
+import com.team3.compose.network.PredictionApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -9,6 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
+import kotlin.jvm.java
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -35,4 +38,9 @@ object NetworkModule {
         .client(okHttpClient)
         .build()
 
+
+    @Singleton
+    @Provides
+    fun providePredictionApiService(retrofit: Retrofit): PredictionApiService =
+        retrofit.create(PredictionApiService::class.java)
 }
