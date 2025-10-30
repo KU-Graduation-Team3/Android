@@ -1,7 +1,7 @@
 package com.team3.compose.ui.details
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +28,8 @@ import java.text.NumberFormat
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
-    navController: NavController
+    navController: NavController,
+    onNewsClick: (String) -> Unit
 ) {
     val viewModel = hiltViewModel<DetailsViewModel>()
     val uiState = viewModel.uiState
@@ -64,7 +65,7 @@ fun DetailsScreen(
         ) {
             item { CurrentPriceCard(stock = uiState.stock) }
             item { SentimentCard(sentiment = uiState.sentimentScore) }
-            item { NewsListCard(news = uiState.newsArticles) }
+            item { NewsListCard(news = uiState.newsArticles, onNewsClick = onNewsClick) }
         }
     }
 }
@@ -109,7 +110,7 @@ fun SentimentCard(sentiment: SentimentScore?) {
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
-            Text("오늘의 뉴스 분석", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+            Text("오늘의 뉴스 감성", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(16.dp))
 
             SentimentProgressBar(sentiment = sentiment)
@@ -183,7 +184,7 @@ fun SentimentLegendItem(color: Color, text: String, value: Float) {
 }
 
 @Composable
-fun NewsListCard(news: List<NewsArticle>) {
+fun NewsListCard(news: List<NewsArticle>,onNewsClick: (String) -> Unit) {
     Column {
          Text(
             text = "최신 관련 뉴스",
@@ -193,16 +194,18 @@ fun NewsListCard(news: List<NewsArticle>) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         news.forEach { article ->
-            NewsItem(article = article)
+            NewsItem(article = article, onNewsClick = onNewsClick)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
 @Composable
-fun NewsItem(article: NewsArticle) {
+fun NewsItem(article: NewsArticle, onNewsClick: (String) -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onNewsClick(article.id) },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
