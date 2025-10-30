@@ -64,7 +64,7 @@ fun DetailsScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             item { CurrentPriceCard(stock = uiState.stock) }
-            item { SentimentCard(sentiment = uiState.sentimentScore) }
+            item { SentimentCard(sentiment = uiState.sentimentScore,viewModel) }
             item { NewsListCard(news = uiState.newsArticles, onNewsClick = onNewsClick) }
         }
     }
@@ -102,15 +102,31 @@ fun CurrentPriceCard(stock: Stock?) {
 }
 
 @Composable
-fun SentimentCard(sentiment: SentimentScore?) {
+fun SentimentCard(sentiment: SentimentScore?, viewModel: DetailsViewModel) {
     if (sentiment == null) return
+    val uiState = viewModel.uiState // Get uiState from viewModel
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
-            Text("오늘의 뉴스 감성", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+            Row() {
+                Text("오늘의 뉴스 감성", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+
+                Box(modifier = Modifier, contentAlignment = Alignment.Center) {
+                    if (uiState.isOverallSentimentLoading) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                    } else {
+                        Text(
+                            text = uiState.overallNewsSentiment ?: "분석 중...",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(16.dp))
 
             SentimentProgressBar(sentiment = sentiment)
@@ -138,7 +154,7 @@ fun SentimentProgressBar(sentiment: SentimentScore) {
         modifier = Modifier
             .fillMaxWidth()
             .height(30.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(15.dp))
     ) {
         Box(
             modifier = Modifier

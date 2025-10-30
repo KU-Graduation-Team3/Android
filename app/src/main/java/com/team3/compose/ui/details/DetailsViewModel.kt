@@ -5,13 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.team3.compose.data.MockData
+import com.team3.compose.repository.PredictionRepository
 import com.team3.compose.ui.Argument
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
+    private val predictionRepository: PredictionRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -22,6 +26,7 @@ class DetailsViewModel @Inject constructor(
 
     init {
         loadStockDetails()
+        fetchOverallNewsSentiment()
     }
 
     private fun loadStockDetails() {
@@ -41,4 +46,42 @@ class DetailsViewModel @Inject constructor(
         )
     }
 
+
+    private fun fetchOverallNewsSentiment() {
+        viewModelScope.launch {
+            uiState = uiState.copy(isOverallSentimentLoading = true)
+            val newsTitles = uiState.newsArticles.map { it.title }
+            if (newsTitles.isNotEmpty()) {
+                predictionRepository.fetchPrediction(listOf("005930"))
+                    .onSuccess {
+                        val positiveCount = it.count { sentence -> sentence.sentiment == 1 }
+                        val neutralCount = it.count { sentence -> sentence.sentiment == 0 }
+                        val negativeCount = it.count { sentence -> sentence.sentiment == -1 }
+
+                        val overallSentiment = when (listOf(positiveCount, neutralCount, negativeCount).maxOrNull()) {
+                            positiveCount -> "긍정"
+                            neutralCount -> "중립"
+                            negativeCount -> "부정"
+                            else -> "알 수 없음"
+                        }
+                        uiState = uiState.copy(
+                            overallNewsSentiment = overallSentiment,
+                            isOverallSentimentLoading = false
+                        )
+                    }
+                    .onFailure {
+                        uiState = uiState.copy(
+                            overallNewsSentiment = "분석 실패",
+                            isOverallSentimentLoading = false,
+                            error = it.localizedMessage
+                        )
+                    }
+            } else {
+                 uiState = uiState.copy(
+                    overallNewsSentiment = "뉴스 없음",
+                    isOverallSentimentLoading = false
+                )
+            }
+        }
+    }
 }

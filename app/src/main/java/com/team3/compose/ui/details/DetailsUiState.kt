@@ -10,6 +10,8 @@ data class DetailsUiState(
     val sentimentScore: SentimentScore? = null,
     val stockPriceHistory: List<StockPriceData> = emptyList(),
     val newsArticles: List<NewsArticle> = emptyList(),
+    val overallNewsSentiment: String? = null,
+    val isOverallSentimentLoading: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null
 )
