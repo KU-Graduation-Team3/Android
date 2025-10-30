@@ -5,9 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.patrykandpatrick.vico.core.model.ChartEntryModelProducer
-import com.patrykandpatrick.vico.core.model.FloatEntry
-import com.patrykandpatrick.vico.core.model.entryModelOf
 import com.team3.compose.data.MockData
 import com.team3.compose.ui.Argument
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,11 +19,9 @@ class DetailsViewModel @Inject constructor(
     var uiState by mutableStateOf(DetailsUiState())
         private set
 
-    val chartEntryModelProducer = ChartEntryModelProducer()
 
     init {
         loadStockDetails()
-        prepareChartData()
     }
 
     private fun loadStockDetails() {
@@ -46,19 +41,4 @@ class DetailsViewModel @Inject constructor(
         )
     }
 
-    private fun prepareChartData() {
-        val priceEntries = uiState.stockPriceHistory.mapIndexed { index, data ->
-            FloatEntry(index.toFloat(), data.closePrice.toFloat())
-        }
-        val positiveEntries = uiState.stockPriceHistory.mapIndexed { index, data ->
-            FloatEntry(index.toFloat(), data.positiveRatio.toFloat())
-        }
-        val negativeEntries = uiState.stockPriceHistory.mapIndexed { index, data ->
-            FloatEntry(index.toFloat(), data.negativeRatio.toFloat())
-        }
-        chartEntryModelProducer.setModels(
-            entryModelOf(priceEntries),
-            entryModelOf(positiveEntries, negativeEntries)
-        )
-    }
 }

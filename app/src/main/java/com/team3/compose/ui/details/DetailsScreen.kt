@@ -1,18 +1,18 @@
 package com.team3.compose.ui.details
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,7 +45,7 @@ fun DetailsScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "뒤로가기")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "뒤로가기")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -109,7 +109,7 @@ fun SentimentCard(sentiment: SentimentScore?) {
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
-            Text("오늘의 뉴스 감성", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+            Text("오늘의 뉴스 분석", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(16.dp))
 
             SentimentProgressBar(sentiment = sentiment)
@@ -137,7 +137,7 @@ fun SentimentProgressBar(sentiment: SentimentScore) {
         modifier = Modifier
             .fillMaxWidth()
             .height(30.dp)
-            .clip(RoundedCornerShape(15.dp))
+            .clip(RoundedCornerShape(12.dp))
     ) {
         Box(
             modifier = Modifier
@@ -238,7 +238,6 @@ fun NewsItem(article: NewsArticle) {
                         modifier = Modifier.weight(1f)
                     )
                 }
-                SentimentBadge(sentiment = article.sentiment, score = article.sentimentScore.toDouble())
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(

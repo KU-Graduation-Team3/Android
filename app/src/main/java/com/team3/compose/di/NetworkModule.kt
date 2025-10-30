@@ -1,6 +1,5 @@
 package com.team3.compose.di
-
-import com.aregyan.compose.BuildConfig
+import com.team3.compose.BuildConfig
 import com.team3.compose.network.DetailsApi
 import com.team3.compose.network.UsersApi
 import dagger.Module
