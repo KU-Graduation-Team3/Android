@@ -1,5 +1,6 @@
 package com.team3.compose.ui.details
 
+import android.R.attr.fontWeight
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -115,12 +116,14 @@ fun SentimentCard(sentiment: SentimentScore?, viewModel: DetailsViewModel) {
             Row() {
                 Text("오늘의 뉴스 감성", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
 
+                Spacer(Modifier.width(8.dp))
+
                 Box(modifier = Modifier, contentAlignment = Alignment.Center) {
                     if (uiState.isOverallSentimentLoading) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                     } else {
                         Text(
-                            text = uiState.overallNewsSentiment ?: "분석 중...",
+                            text = "(${uiState.overallNewsSentiment})" ?: "분석 중...",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold
                         )

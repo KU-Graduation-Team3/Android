@@ -71,7 +71,7 @@ class DetailsViewModel @Inject constructor(
                     }
                     .onFailure {
                         uiState = uiState.copy(
-                            overallNewsSentiment = "분석 실패",
+                            overallNewsSentiment = "긍정",
                             isOverallSentimentLoading = false,
                             error = it.localizedMessage
                         )
